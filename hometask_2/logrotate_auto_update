@@ -1,0 +1,12 @@
+/var/log/update-*.log {
+        su root syslog
+        monthly
+        rotate 3
+        missingok
+        compress
+        delaycompress
+        sharedscripts     
+        postrotate
+        ./auto_update.sh
+        endscript
+}
