@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure(2) do |config|
+
+config.vm.box = "centos/7"
+  config.vm.box_check_update = false
+  config.vm.hostname = "hometask"  
+  config.vm.network "forwarded_port", guest: 8090, host: 8080, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 3306, host: 3306
+
+  config.vm.network "public_network"
+
+  config.vm.define "hometask"
+  config.vm.provider "virtualbox" do |vb|
+     vb.gui = false
+     vb.memory = "1024"
+
+   config.vm.provision "file", source: "./atlassian-confluence-7.3.1-x64.bin", destination: "/tmp/"
+   config.vm.provision "file", source: "./response.varfile", destination: "/tmp/"
+   config.vm.provision :shell, :inline  => "sudo /tmp/atlassian-confluence-7.3.1-x64.bin -q -varfile response.varfile"
+   config.vm.provision "shell", path: "./install_mysql.sh"
+  end
+end
